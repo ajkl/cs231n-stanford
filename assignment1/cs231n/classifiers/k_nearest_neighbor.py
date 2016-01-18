@@ -135,11 +135,9 @@ class KNearestNeighbor:
     """
     Given a matrix of distances between test points and training points,
     predict a label for each test point.
-
     Input:
     dists - A num_test x num_train array where dists[i, j] gives the distance
             between the ith test point and the jth training point.
-
     Output:
     y - A vector of length num_test where y[i] is the predicted label for the
         ith test point.
@@ -149,38 +147,27 @@ class KNearestNeighbor:
     for i in xrange(num_test):
         # A list of length k storing the labels of the k nearest neighbors to
         # the ith test point.
-        #closest_y = []
+        closest_y = []
         #########################################################################
-        # TODO:                                                                 #
         # Use the distance matrix to find the k nearest neighbors of the ith    #
         # training point, and use self.y_train to find the labels of these      #
         # neighbors. Store these labels in closest_y.                           #
         # Hint: Look up the function numpy.argsort.                             #
         #########################################################################
-        
-        order_index = np.argsort(dists[i,:])
-        #print dists[i,:]
-        #print dists[i,order_index[-k:]]
-        #print self.y_train[order_index]
-        top_k_index = order_index[0:k]
-        closest_y = self.y_train[top_k_index]
-        
+        labels = self.y_train[np.argsort(dists[i,:])].flatten()
+        # print labels.shape
+        closest_y = labels[0:k]
+        # print 'k is %d' % k
+
         #########################################################################
-        # TODO:                                                                 #
         # Now that you have found the labels of the k nearest neighbors, you    #
         # need to find the most common label in the list closest_y of labels.   #
         # Store this label in y_pred[i]. Break ties by choosing the smaller     #
         # label.                                                                #
         #########################################################################
 
-        closest_y.sort()
-        label_counter=collections.Counter(closest_y)
-        #print label_counter
-        y_pred[i] = label_counter.most_common(1)[0][0]
-
-        #########################################################################
-        #                           END OF YOUR CODE                            # 
-        #########################################################################
+        c = collections.Counter(closest_y)
+        y_pred[i] = c.most_common(1)[0][0]
 
     return y_pred
 
